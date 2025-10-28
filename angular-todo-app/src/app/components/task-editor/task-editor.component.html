@@ -1,0 +1,47 @@
+<div class="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
+  <div class="w-full max-w-lg bg-gray-900 border border-gray-800 rounded-md p-4">
+    <header class="panel-header flex items-center justify-between">
+      <span>{{ task ? 'Редактирование' : 'Новая задача' }}</span>
+      <button (click)="onCancel()" class="text-gray-400 hover:text-gray-200">✕</button>
+    </header>
+
+    <form class="mt-4 space-y-3" [formGroup]="form" (ngSubmit)="onSave()">
+      <div>
+        <label class="block text-xs text-gray-400 mb-1">Название</label>
+        <input class="w-full bg-gray-800 border border-gray-700 rounded px-3 py-2 text-sm"
+               formControlName="title" placeholder="Название задачи" />
+      </div>
+
+      <div>
+        <label class="block text-xs text-gray-400 mb-1">Описание</label>
+        <textarea rows="4" class="w-full bg-gray-800 border border-gray-700 rounded px-3 py-2 text-sm"
+                  formControlName="description" placeholder="Необязательное описание"></textarea>
+      </div>
+
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="block text-xs text-gray-400 mb-1">Приоритет</label>
+          <select class="w-full bg-gray-800 border border-gray-700 rounded px-3 py-2 text-sm"
+                  formControlName="priority">
+            <option *ngFor="let p of priorities" [ngValue]="p">{{ p | priorityDisplay }}</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs text-gray-400 mb-1">Дедлайн</label>
+          <input type="date" class="w-full bg-gray-800 border border-gray-700 rounded px-3 py-2 text-sm"
+                 formControlName="dueDate" required />
+        </div>
+      </div>
+
+      <footer class="flex items-center justify-between gap-2 pt-2">
+        <button *ngIf="task" type="button" (click)="onDelete()" class="px-3 py-1.5 text-xs rounded border border-red-700 text-red-300 hover:bg-red-900/30">Удалить</button>
+        <div class="flex-1"></div>
+        <button type="button" (click)="onCancel()" class="px-3 py-1.5 text-xs rounded border border-gray-700">Отмена</button>
+        <button type="submit" class="px-3 py-1.5 text-xs rounded bg-blue-600 hover:bg-blue-500 disabled:opacity-50" [disabled]="form.invalid">Сохранить</button>
+      </footer>
+    </form>
+  </div>
+    
+</div>
+
+

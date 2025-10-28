@@ -1,0 +1,28 @@
+<article class="bg-gray-800 border rounded p-3 text-sm select-none"
+  [ngClass]="{
+    'border-red-700': task.priority === 'high',
+    'border-amber-700': task.priority === 'medium',
+    'border-teal-700': task.priority === 'low'
+  }">
+  <div class="mb-2 px-2 py-1 rounded text-xs font-semibold uppercase tracking-wide w-fit"
+    [ngClass]="{
+      'bg-red-900/20 text-red-300 border border-red-800': task.priority === 'high',
+      'bg-amber-900/20 text-amber-300 border border-amber-800': task.priority === 'medium',
+      'bg-teal-900/20 text-teal-300 border border-teal-800': task.priority === 'low'
+    }">
+    {{ task.priority | priorityDisplay }}
+  </div>
+  <h3 class="font-medium text-gray-100 line-clamp-2">{{ task.title }}</h3>
+  <p *ngIf="task.description" class="mt-1 text-gray-400 line-clamp-2">{{ task.description }}</p>
+  <div class="mt-2 flex items-center justify-between text-xs text-gray-500">
+    <span>Обновлена {{ task.updatedAt | gmt3Time }}</span>
+    <span class="uppercase">{{ task.priority | priorityDisplay }}</span>
+  </div>
+  <div class="mt-2 flex items-center justify-between">
+    <button (click)="onToggleClick($event)" class="px-2 py-1 text-xs rounded bg-gray-700 hover:bg-gray-600 text-gray-100">
+      {{ task.status === 'pending' ? 'Отметить как выполнено' : 'Сделать активной' }}
+    </button>
+  </div>
+</article>
+
+

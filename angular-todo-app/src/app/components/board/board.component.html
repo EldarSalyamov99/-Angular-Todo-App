@@ -1,0 +1,74 @@
+<div class="h-screen w-screen overflow-hidden flex flex-col">
+  <header class="shrink-0 px-4 md:px-6 py-3 border-b border-gray-800 bg-gray-900 flex flex-wrap items-center justify-between gap-3 md:gap-4">
+    <h1 class="text-sm font-semibold uppercase tracking-wide text-gray-300">Доска задач</h1>
+    <div class="flex flex-wrap items-center gap-2 w-full sm:w-auto">
+      <input class="bg-gray-800 border border-gray-700 rounded px-3 py-1.5 text-xs w-full sm:w-56" placeholder="Поиск по названию" [(ngModel)]="filters.searchQuery" (ngModelChange)="applyFilters()" />
+      <select class="bg-gray-800 border border-gray-700 rounded px-2 py-1.5 text-xs" [(ngModel)]="filters.status" (ngModelChange)="applyFilters()">
+        <option [ngValue]="'all'">Все</option>
+        <option [ngValue]="'pending'">Активные</option>
+        <option [ngValue]="'completed'">Завершенные</option>
+      </select>
+      <select class="bg-gray-800 border border-gray-700 rounded px-2 py-1.5 text-xs" [(ngModel)]="sort.field" (ngModelChange)="applyFilters()">
+        <option [ngValue]="'createdAt'">Создана</option>
+        <option [ngValue]="'priority'">Приоритет</option>
+        <option [ngValue]="'updatedAt'">Обновлена</option>
+        <option [ngValue]="'title'">Название</option>
+      </select>
+      <select class="bg-gray-800 border border-gray-700 rounded px-2 py-1.5 text-xs" [(ngModel)]="sort.direction" (ngModelChange)="applyFilters()">
+        <option [ngValue]="'asc'">Возр.</option>
+        <option [ngValue]="'desc'">Убыв.</option>
+      </select>
+    </div>
+    <button (click)="openCreate()" class="px-3 py-1.5 text-xs font-medium rounded bg-blue-600 hover:bg-blue-500 w-full sm:w-auto">Добавить задачу</button>
+  </header>
+
+  <main class="flex-1 overflow-x-auto overflow-y-hidden custom-scroll">
+    
+    <div *ngIf="!isMobile" class="h-full min-w-full grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-3 md:gap-4 p-3 md:p-4">
+      <ng-container *ngFor="let col of columns">
+        <div [class.col-span-1]="true" [class.md:col-span-1]="true">
+          <app-column
+            [title]="col.title"
+            [type]="'priority'"
+            [priority]="col.id"
+            [tasks]="col.tasks"
+            [dropListId]="getDropListId(col.id)"
+            [connectedDropLists]="connectedIds"
+            class="panel"
+            (dropped)="onDrop($event.event, $event.type, $event.priority)"
+            (itemClicked)="openEdit($event)"
+          ></app-column>
+        </div>
+      </ng-container>
+      <div [class.col-span-1]="true" [class.md:col-span-1]="true">
+        <app-column
+          [title]="'Сделано'"
+          [type]="'done'"
+          [tasks]="doneColumn.tasks"
+          [dropListId]="getDropListId('done')"
+          [connectedDropLists]="connectedIds"
+          class="panel"
+          (dropped)="onDrop($event.event, $event.type)"
+          (itemClicked)="openEdit($event)"
+        ></app-column>
+      </div>
+    </div>
+
+    
+    <div *ngIf="isMobile" class="h-full min-w-full p-3 space-y-2 overflow-y-auto custom-scroll">
+      <div *ngFor="let task of mobileTasks; trackBy: trackById" class="cursor-pointer" (click)="openEdit(task)">
+        <app-task-card [task]="task" (toggleStatus)="onToggleTaskStatus({ id: task.id, newStatus: task.status === 'pending' ? 'completed' : 'pending' })"></app-task-card>
+      </div>
+    </div>
+  </main>
+
+  <app-task-editor
+    *ngIf="editorOpen"
+    [task]="editorTask"
+    (cancel)="closeEditor()"
+    (save)="saveTask($event)"
+    (delete)="deleteTask($event)"
+  ></app-task-editor>
+</div>
+
+

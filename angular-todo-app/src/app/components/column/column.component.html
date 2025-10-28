@@ -1,0 +1,26 @@
+<section class="h-full flex flex-col bg-gray-900 border border-gray-800 rounded-md" [ngClass]="getPanelClass()">
+  <header class="panel-header flex items-center justify-between cursor-pointer select-none" [ngClass]="getHeaderClass()" (click)="onHeaderClick()">
+    <span>{{ title }}</span>
+    <span class="text-gray-500">{{ tasks.length || 0 }}</span>
+  </header>
+
+  <div class="flex-1 overflow-hidden" [class.hidden]="collapsible && collapsed">
+    <cdk-virtual-scroll-viewport class="h-full custom-scroll" itemSize="80"
+      cdkDropList
+      [id]="dropListId"
+      [cdkDropListData]="tasks"
+      [cdkDropListConnectedTo]="connectedDropLists"
+      (cdkDropListDropped)="drop($event)"
+    >
+      <div class="h-full px-2 pb-2 space-y-2">
+        <div *cdkVirtualFor="let task of tasks; let i = index; trackBy: trackById">
+          <div cdkDrag (click)="clickTask(task)">
+            <app-task-card [task]="task" (toggleStatus)="toggleTaskStatus(task)"></app-task-card>
+          </div>
+        </div>
+      </div>
+    </cdk-virtual-scroll-viewport>
+  </div>
+</section>
+
+

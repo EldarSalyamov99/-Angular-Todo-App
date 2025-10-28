@@ -1,0 +1,15 @@
+:host {
+  display: block;
+}
+
+.cdk-drag-preview {
+  @apply opacity-90 shadow-2xl rounded-xl;
+}
+
+.cdk-drag-placeholder {
+  @apply opacity-30;
+}
+
+.cdk-drag-animating {
+  @apply transition-transform duration-300;
+}
